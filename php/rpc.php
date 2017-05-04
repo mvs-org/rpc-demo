@@ -8,9 +8,52 @@
 		先创建钱包账户:createAccount（方法）;
 		其余：
 		    查出本地用户表中的所有etp地址，查出本地所有交易记录，迭代etp地址结果集，根据地址查处区块链上所有的交易记录，与本地交易记录对比，筛选出新的交易记录，保存到本地交易记录的数据库表中；listtxs（方法）	
-		    发送交易：send（方法） 
+		    发送交易：send（方法）;
+        获得hash根据块高度:	getHashByBloakHeight(方法)；
+		获得hash根据块高度：getBlockByHash（方法）；
+		获得最新一条hash：getBestBlockHash（方法）；
+		
 	*/
 	error_reporting(E_ERROR | E_WARNING | E_PARSE);	  
+	
+	/**
+	*@date 2107-05-02
+	*@description 获得hash根据块高度
+	*/					
+	function getHashByBloakHeight($height){
+		//请求参数（method:fetch-height）  
+		$post_data = array(  
+		  "method" => "fetch-header",  
+		  "params" => ["-t",$height]  
+		);
+		return _request($post_data);
+	};
+	
+	/**
+	*@date 2107-05-02
+	*@description 获得hash根据块高度
+	*/					
+	function getBlockByHash($hash){
+		//请求参数（method:fetch-height）  
+		$post_data = array(  
+		  "method" => "getblock",  
+		  "params" => [$hash,'--json=true']  
+		);
+		return _request($post_data);
+	};
+	
+	/**
+	*@date 2107-05-02
+	*@description 获得最新的hash
+	*/					
+	function getBestBlockHash(){
+		//请求参数（method:fetch-height）  
+		$post_data = array(  
+		  "method" => "getbestblockhash",  
+		  "params" => []  
+		);
+		return _request($post_data);
+	};
 	
 	/**
 	*@date 2107-05-02
@@ -170,7 +213,7 @@
 		mysql_select_db($mysql_name); 
 		
 		//创建钱包账户
-		$account = createAccount("test32","test23");
+		//$account = createAccount("test32","test23");
 		//$addressInsertSql = "insert into user(mnemonic,address) values(".$account['mnemonic'].",".$blockOutputrow['default-address'].");";
 		//将创建出来的钱包地址保存到数据库当中
 		//insert($addressInsertSql,$conn);
@@ -180,6 +223,12 @@
 		
 		//处理交易相关
 		//listtxs($conn);
+		//获得hash根据块高度
+		//$hashs = getHashByBloakHeight(100);
+		//获取块根据hash
+		//echo getBlockByHash("ebbc89b28eb43974efe35db0c4874616997dfd6fa5649d7e6eee292c72383039");
+		//获取最新hash
+		//getBestBlockHash();
 		
 	};
 	init();
