@@ -446,4 +446,30 @@ func (r *Rpc) FetchHeader(options map[string]interface{}) (*BlockHeader, *Respon
 	return result.Block, nil
 }
 
-
+func (r *Rpc) GetBlock(hash string, jsonfmt bool) (*Block, *ResponseError) {
+	params := []interface{}{hash}
+	if jsonfmt {
+		params = append(params, "true")
+	}
+	resp, ex := r.Client.Request("getblock", Params(params))
+	if ex != nil {
+		return nil, ex
+	}
+	header := new(BlockHeader)
+	if err := childUnmarshal(resp, &header, "header", "result"); err != nil {
+		ex.Message = err.Error()
+		return nil, ex
+	}
+	var txs struct {
+		Txs []*Transaction `json:"transactions"`
+	}
+	if err := childUnmarshal(resp, &txs, "txs"); err != nil {
+		ex.Message = err.Error()
+		return nil, ex
+	}
+	block := &Block{
+		Header: header,
+		Txs:    txs.Txs,
+	}
+	return block, nil
+}

@@ -9,8 +9,8 @@ var rpc *Rpc
 
 func init() {
 	cli := NewClient("http://127.0.0.1:8820", "/rpc")
-	user := &User{Account: "impressiver", Auth: "lanjianhao"}
-	group := map[string]*User{"impressiver": user}
+	user := &User{Account: "mutou123", Auth: "mutou123"}
+	group := map[string]*User{"mutou123": user}
 	rpc = &Rpc{User: user, Client: cli, Group: group}
 }
 
@@ -252,4 +252,13 @@ func TestRpc_SendMore(t *testing.T) {
 		t.Fatal(ex.Message)
 	}
 	t.Log(txs)
+}
+
+func TestRpc_GetBlockock(t *testing.T) {
+	block, ex := rpc.GetBlock("abc0b70b271be9249c57e724667c7ce1330e7454c3697336a6b38aa0cf1516dc", true)
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(block.Header.Hash)
+	t.Log(block.Txs[0].Hash)
 }

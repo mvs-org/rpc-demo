@@ -7,6 +7,11 @@ type MiningInfo struct {
 	Difficultly uint64 `json:"difficulty,string,omitempty""`
 }
 
+type Block struct {
+	Header *BlockHeader
+	Txs    []*Transaction
+}
+
 type BlockHeader struct {
 	Bits              string `json:"bits"`
 	Hash              string `json:"hash"`
@@ -63,10 +68,16 @@ type Transaction struct {
 }
 
 type Input struct {
-	Address string `json:"address"`
+	Address   string  `json:"address"`
+	PreOutput *Output `json:"previous_output"`
+	Sequence  uint64  `json:"sequence,string,omitempty"`
 }
 
 type Output struct {
+	Hash       string      `json:"hash"`
+	Index      uint64      `json:"index,string,omitempty"`
+	Script     string      `json:"script"`
+	Value      uint64      `json:"value,string,omitempty"`
 	Own        string      `json:"own"`
 	Address    string      `json:"address"`
 	EtpValue   uint64      `json:"etp-value,string,omitempty"`
