@@ -29,10 +29,10 @@ type AccountInfo struct {
 	Name           string   `json:"name"`
 	Mnemonic       string   `json:"mnemonic"`
 	HdIndex        int64    `json:"hd_index,string,omitempty"`
-	Addresses      []string `json:"addresses",string,omitempty"`
+	Addresses      []string `json:"addresses,string,omitempty"`
 	DefaultAddress string   `json:"default-address"`
-	AddressCnt     int64    `json:"address-count",string,omitempty"`
-	UserStatus     int      `json:"user-status",string,omitempty"`
+	AddressCnt     int64    `json:"address-count,string,omitempty"`
+	UserStatus     int      `json:"user-status,string,omitempty"`
 }
 
 type BalanceStatistic struct {
