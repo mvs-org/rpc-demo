@@ -2,9 +2,9 @@ package client
 
 type MiningInfo struct {
 	Status      string `json:"status"`
-	Height      uint64 `json:"height,string,omitempty""`
-	Rate        int    `json:"rate,string,omitempty""`
-	Difficultly uint64 `json:"difficulty,string,omitempty""`
+	Height      uint64 `json:"height,string,omitempty"`
+	Rate        int    `json:"rate,string,omitempty"`
+	Difficultly uint64 `json:"difficulty,string,omitempty"`
 }
 
 type Block struct {
