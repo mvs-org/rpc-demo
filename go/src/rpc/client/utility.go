@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+
 	"github.com/antonholmquist/jason"
 )
 

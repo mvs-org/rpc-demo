@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/antonholmquist/jason"
 	"strconv"
 	"strings"
+
+	"github.com/antonholmquist/jason"
 )
 
 type User struct {
@@ -85,7 +86,7 @@ func (r *Rpc) GetBestBlockHeader() (*BlockHeader, *ResponseError) {
 		return nil, ex
 	}
 	var result struct {
-		BlockHeader BlockHeader `json:"result"`
+		BlockHeader *BlockHeader `json:"result"`
 	}
 	if err := json.Unmarshal(resp, &result); err != nil {
 		ex.Message = err.Error()
