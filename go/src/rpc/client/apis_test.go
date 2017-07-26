@@ -257,7 +257,7 @@ func TestRpc_SendMore(t *testing.T) {
 	t.Log(txs)
 }
 
-func TestRpc_GetBlockock(t *testing.T) {
+func TestRpc_GetBlock(t *testing.T) {
 	block, ex := rpc.GetBlock("abc0b70b271be9249c57e724667c7ce1330e7454c3697336a6b38aa0cf1516dc", true)
 	if ex != nil {
 		t.Fatal(ex.Message)
@@ -285,5 +285,141 @@ func TestRpc_GetAsset(t *testing.T) {
 		t.Fatal(ex.Message)
 	}
 	t.Log(assets)
-	t.Log(assets[0].Symbol)
+	t.Log(assets[0])
 }
+
+func TestRpc_GetAddressAsset(t *testing.T) {
+	assets, ex := rpc.GetAddressAsset("tTxNwtVgwyguysyNcWFFgGMKzfhwYqUy3m")
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(assets)
+	t.Log(assets[0])
+}
+
+func TestRpc_GetAccountAsset(t *testing.T) {
+	assets, ex := rpc.GetAccountAsset()
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(assets)
+	t.Log(assets[1])
+}
+
+func TestRpc_ListAssets(t *testing.T) {
+	assets, ex := rpc.ListAssets()
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(assets)
+	t.Log(assets[0])
+}
+
+func TestRpc_Issue(t *testing.T) {
+	tx, ex := rpc.Issue("TEST.TPC")
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(tx)
+	t.Log(tx.Outputs[0].Attachment.Symbol)
+}
+
+func TestRpc_IssueFrom(t *testing.T) {
+	tx, ex := rpc.IssueFrom("TEST.TPC", "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT")
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(tx)
+}
+
+func TestRpc_SendAsset(t *testing.T) {
+	tx, ex := rpc.SendAsset("TEST.TPC", "tEDsZ5ob2MPNLmZQifevijY1CMq4bw8pH2", 200)
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(tx)
+	for _, v := range tx.Outputs {
+		t.Log(v)
+	}
+
+	for _, v := range tx.Inputs {
+		t.Log(v)
+	}
+}
+
+func TestRpc_SendAssetFrom(t *testing.T) {
+	tx, ex := rpc.SendAssetFrom("TEST.LANJIAN", "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT", "tEDsZ5ob2MPNLmZQifevijY1CMq4bw8pH2", 300)
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(tx)
+	for _, v := range tx.Outputs {
+		t.Log(v)
+	}
+
+	for _, v := range tx.Inputs {
+		t.Log(v)
+	}
+}
+
+func TestRpc_Deposit(t *testing.T) {
+	tx, ex := rpc.Deposit(200)
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(tx)
+	for _, v := range tx.Outputs {
+		t.Log(v)
+	}
+
+	for _, v := range tx.Inputs {
+		t.Log(v)
+	}
+}
+
+/*
+ tx := `{
+    "transaction": {
+        "hash": "af9a1ddf4ad11826bcde7d7969c86c96b74d897ceef18c49c0d553595849df1d",
+        "inputs": [
+            {
+                "address": "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT",
+                "previous_output": {
+                    "hash": "c920d4c2eca699fdfe6b78ac250372002ef97a08028813e57ccfd774e5d5f33f",
+                    "index": "1"
+                },
+                "script": "[ 30440220654bfd0cffea9ac4b5dfec0e492685d41e28b66b6da91a72b4cf57dd30e27e73022039b914b4c2c5517d75fd36b21bf3302b068e7c1294f793ff7403aa40e25ea82301 ] [ 022c40429b64080245118286d5f951169915ddd66b6188135ec67455a90b548a0e ]",
+                "sequence": "4294967295"
+            }
+        ],
+        "lock_time": "0",
+        "outputs": [
+            {
+                "index": "0",
+                "address": "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT",
+                "script": "dup hash160 [ a2123b59f0b22170f3cdf4ebc7452af7da44c16c ] equalverify checksig",
+                "value": "0",
+                "attachment": {
+                    "type": "asset-issue",
+                    "symbol": "TEST.TPC",
+                    "quantity": "2000",
+                    "decimal_number": "2",
+                    "issuer": "mutou",
+                    "address": "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT",
+                    "description": "we are testing"
+                }
+            },
+            {
+                "index": "1",
+                "address": "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT",
+                "script": "dup hash160 [ a2123b59f0b22170f3cdf4ebc7452af7da44c16c ] equalverify checksig",
+                "value": "28000000000",
+                "attachment": {
+                    "type": "etp"
+                }
+            }
+        ],
+        "version": "2"
+    }
+}`
+*/

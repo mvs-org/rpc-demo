@@ -71,6 +71,7 @@ type Input struct {
 	Address   string  `json:"address"`
 	PreOutput *Output `json:"previous_output"`
 	Sequence  uint64  `json:"sequence,string,omitempty"`
+	Script    string  `json:"script"`
 }
 
 type Output struct {
@@ -85,7 +86,13 @@ type Output struct {
 }
 
 type Attachment struct {
-	Type string `json:"type"`
+	Type        string `json:"type"`
+	Symbol      string `json:"symbol"`
+	Quantity    uint64 `json:"quantity,string,omitempty"`
+	Decimal     int64  `json:"decimal_number,string,omitempty"`
+	Issuer      string `json:"issuer"`
+	Address     string `json:"address"`
+	Description string `json:"description"`
 }
 
 type UTXO struct {

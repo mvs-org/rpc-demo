@@ -510,15 +510,80 @@ func (r *Rpc) CreateAsset(symbol string, volume uint64, options map[string]inter
 
 func (r *Rpc) GetAsset(symbol string) ([]*Asset, *ResponseError) {
 	resp, ex := r.Client.Request("getasset", Params{r.User.Account, r.User.Auth, symbol})
+	return r.parseAssets(resp, ex), ex
+}
+
+func (r *Rpc) GetAddressAsset(address string) ([]*Asset, *ResponseError) {
+	resp, ex := r.Client.Request("getaddressasset", Params{address})
+	return r.parseAssets(resp, ex), ex
+}
+
+func (r *Rpc) GetAccountAsset() ([]*Asset, *ResponseError) {
+	resp, ex := r.Client.Request("getaccountasset", Params{r.User.Account, r.User.Auth})
+	return r.parseAssets(resp, ex), ex
+}
+
+func (r *Rpc) ListAssets() ([]*Asset, *ResponseError) {
+	resp, ex := r.Client.Request("listassets", Params{r.User.Account, r.User.Auth})
+	return r.parseAssets(resp, ex), ex
+}
+
+func (r *Rpc) parseAssets(data []byte, ex *ResponseError) []*Asset {
 	if ex != nil {
-		return nil, ex
+		return nil
 	}
 	var result struct {
 		Assets []*Asset `json:"assets"`
 	}
-	if err := json.Unmarshal(resp, &result); err != nil {
+	if err := json.Unmarshal(data, &result); err != nil {
 		ex.Message = err.Error()
-		return nil, ex
+		return nil
 	}
-	return result.Assets, nil
+	return result.Assets
+}
+
+func (r *Rpc) Issue(symbol string) (*Transaction, *ResponseError) {
+	resp, ex := r.Client.Request("issue", Params{r.User.Account, r.User.Auth, symbol})
+	return r.parseTx(resp, ex), ex
+}
+
+func (r *Rpc) IssueFrom(symbol, address string) (*Transaction, *ResponseError) {
+	resp, ex := r.Client.Request("issue", Params{r.User.Account, r.User.Auth, address, symbol})
+	return r.parseTx(resp, ex), ex
+}
+
+func (r *Rpc) SendAsset(symbol, address string, amount uint64) (*Transaction, *ResponseError) {
+	resp, ex := r.Client.Request("sendasset", Params{r.User.Account, r.User.Auth, address, symbol, amount})
+	return r.parseTx(resp, ex), ex
+}
+
+func (r *Rpc) SendAssetFrom(symbol, fromaddr, toaddr string, amount uint64) (*Transaction, *ResponseError) {
+	resp, ex := r.Client.Request("sendassetfrom", Params{
+		r.User.Account,
+		r.User.Auth,
+		fromaddr,
+		toaddr,
+		symbol,
+		amount,
+	})
+	return r.parseTx(resp, ex), ex
+}
+
+func (r *Rpc) Deposit(amount uint64) (*Transaction, *ResponseError) {
+	resp, ex := r.Client.Request("deposit", Params{r.User.Account, r.User.Auth, amount})
+	return r.parseTx(resp, ex), ex
+}
+
+func (r *Rpc) parseTx(data []byte, ex *ResponseError) *Transaction {
+	if ex != nil {
+		return nil
+	}
+	var result struct {
+		Tx *Transaction `json:"transaction"`
+	}
+	if err := json.Unmarshal(data, &result); err != nil {
+		ex.Message = err.Error()
+		return nil
+	}
+	return result.Tx
 }
