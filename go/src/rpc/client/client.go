@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -25,7 +26,7 @@ func (c *Client) Request(method string, params Params) (json.RawMessage, *Respon
 	}
 
 	reqJson, _ := json.Marshal(req)
-	//fmt.Println(string(reqJson))
+	fmt.Println(string(reqJson))
 	httpreq, _ := http.NewRequest("POST", c.path, bytes.NewBuffer(reqJson))
 	httpreq.Header.Set("Content-Type", "application/json; charset=utf-8")
 	resp, err := http.DefaultClient.Do(httpreq)
@@ -42,7 +43,7 @@ func (c *Client) Request(method string, params Params) (json.RawMessage, *Respon
 		return nil, ex
 	}
 	body, err := ioutil.ReadAll(resp.Body)
-	//fmt.Println(string(body))
+	fmt.Println(string(body))
 	if err != nil {
 		ex.Message = "http response read faild"
 		return nil, ex

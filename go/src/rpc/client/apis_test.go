@@ -9,8 +9,8 @@ var rpc *Rpc
 
 func init() {
 	cli := NewClient("http://127.0.0.1:8820", "/rpc")
-	user := &User{Account: "mutou123", Auth: "mutou123"}
-	group := map[string]*User{"mutou123": user}
+	user := &User{Account: "mutou", Auth: "mutou"}
+	group := map[string]*User{"mutou": user}
 	rpc = &Rpc{User: user, Client: cli, Group: group}
 }
 
@@ -120,10 +120,10 @@ func TestRpc_DeleteAccount(t *testing.T) {
 }
 
 func TestRpc_ImportAccount(t *testing.T) {
-	rpc.User = &User{"mutou111", "mutou111"}
-	words := "apology network ostrich dentist denial vehicle forget buzz about record barely course check clutch area game pioneer sort casino letter isolate style maximum father"
+	rpc.User = &User{"mutou", "mutou"}
+	words := "decrease tank copper object melt twelve axis amateur half tornado snake huge estate need since giggle genius oil tiny daughter alcohol lab funny audit"
 	mnemonic := strings.Split(words, " ")
-	info, ex := rpc.ImportAccount(mnemonic, 0)
+	info, ex := rpc.ImportAccount(mnemonic, 1)
 	if ex != nil {
 		t.Fatal(ex.Message)
 	}
@@ -140,8 +140,8 @@ func TestRpc_GetNewAddress(t *testing.T) {
 }
 
 func TestRpc_GetAccount(t *testing.T) {
-	rpc.User = &User{"mutou1234567", "mutou1234567"}
-	info, ex := rpc.GetAccount("father")
+	rpc.User = &User{"mutou", "mutou"}
+	info, ex := rpc.GetAccount("audit")
 	if ex != nil {
 		t.Fatal(ex.Message)
 	}
@@ -154,6 +154,7 @@ func TestRpc_GetBalance(t *testing.T) {
 		t.Fatal(ex.Message)
 	}
 	t.Log(result)
+	t.Log(result.TotalAvailable)
 }
 
 func TestRpc_GetTransaction(t *testing.T) {
@@ -167,7 +168,7 @@ func TestRpc_GetTransaction(t *testing.T) {
 func TestRpc_ListTxs(t *testing.T) {
 	//options1 := map[string]interface{}{"address": "MSx1uiBk9vRnW9mcbNgmRP8Fn1svcGkNfR", "height": "231:43827428"}
 	//options2 := map[string]interface{}{"height": "438:4393123"}
-	options3 := map[string]interface{}{"address": "3Pf24QBBdL7cLk27BpQeAaFYZqmDUc7ppb"}
+	options3 := map[string]interface{}{"address": "tMhZMdz6Gk7RARMW1WxFvLfoodKG82CEKT"}
 
 	txs, ex := rpc.ListTxs(options3)
 	//txs, ex := rpc.ListTxs(nil)
@@ -175,6 +176,8 @@ func TestRpc_ListTxs(t *testing.T) {
 		t.Fatal(ex.Message)
 	}
 	t.Log(txs)
+	t.Log(txs[1].Hash, txs[0].Inputs[0].Address)
+	t.Log(txs[1].Hash)
 }
 
 func TestRpc_ListAddresses(t *testing.T) {
@@ -191,7 +194,7 @@ func TestRpc_ListBalances(t *testing.T) {
 		t.Fatal(ex.Message)
 	}
 	t.Log(bs)
-	t.Log(bs[1].Balance.Address)
+	t.Log(bs[0].Balance.Address)
 }
 
 func TestRpc_ValidateAddress(t *testing.T) {
@@ -229,7 +232,7 @@ func TestRpc_GetPublicKey(t *testing.T) {
 }
 
 func TestRpc_Send(t *testing.T) {
-	tx, ex := rpc.Send("MSx1uiBk9vRnW9mcbNgmRP8Fn1svcGkNfR", 1)
+	tx, ex := rpc.Send("tEDsZ5ob2MPNLmZQifevijY1CMq4bw8pH2", 1)
 	if ex != nil {
 		t.Fatal(ex.Message)
 	}
@@ -261,4 +264,26 @@ func TestRpc_GetBlockock(t *testing.T) {
 	}
 	t.Log(block.Header.Hash)
 	t.Log(block.Txs[0].Hash)
+}
+
+func TestRpc_CreateAsset(t *testing.T) {
+	options := make(map[string]interface{}, 0)
+	options["issuer"] = "tester"
+	options["description"] = "we are testing"
+	options["decimalnumber"] = 2
+	asset, ex := rpc.CreateAsset("TEST.TPC", 2000, options)
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(asset)
+	t.Log(asset.Symbol)
+}
+
+func TestRpc_GetAsset(t *testing.T) {
+	assets, ex := rpc.GetAsset("TEST.LANJIAN")
+	if ex != nil {
+		t.Fatal(ex.Message)
+	}
+	t.Log(assets)
+	t.Log(assets[0].Symbol)
 }

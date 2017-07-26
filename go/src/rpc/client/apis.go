@@ -473,3 +473,52 @@ func (r *Rpc) GetBlock(hash string, jsonfmt bool) (*Block, *ResponseError) {
 	}
 	return block, nil
 }
+
+func (r *Rpc) CreateAsset(symbol string, volume uint64, options map[string]interface{}) (*Asset, *ResponseError) {
+	params := []interface{}{
+		r.User.Account,
+		r.User.Auth,
+		fmt.Sprintf("--symbol=%v", symbol),
+		fmt.Sprintf("--volume=%v", volume),
+	}
+	if options != nil {
+		for k, v := range options {
+			switch k {
+			case "d", "description":
+				params = append(params, fmt.Sprintf("--description=%v", v))
+			case "n", "decimalnumber":
+				params = append(params, fmt.Sprintf("--decimalnumbe=%v", v))
+			case "i", "--issuer":
+				params = append(params, fmt.Sprintf("--issuer=%v", v))
+			}
+		}
+	}
+
+	resp, ex := r.Client.Request("createasset", Params(params))
+	if ex != nil {
+		return nil, ex
+	}
+	var result struct {
+		Asset *Asset `json:"asset"`
+	}
+	if err := json.Unmarshal(resp, &result); err != nil {
+		ex.Message = err.Error()
+		return nil, ex
+	}
+	return result.Asset, nil
+}
+
+func (r *Rpc) GetAsset(symbol string) ([]*Asset, *ResponseError) {
+	resp, ex := r.Client.Request("getasset", Params{r.User.Account, r.User.Auth, symbol})
+	if ex != nil {
+		return nil, ex
+	}
+	var result struct {
+		Assets []*Asset `json:"assets"`
+	}
+	if err := json.Unmarshal(resp, &result); err != nil {
+		ex.Message = err.Error()
+		return nil, ex
+	}
+	return result.Assets, nil
+}

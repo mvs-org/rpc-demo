@@ -97,3 +97,13 @@ type Point struct {
 	Hash  string `json:"hash"`
 	Index uint64 `json:"index,string,omitempty"`
 }
+
+type Asset struct {
+	Symbol      string `json:"symbol"`
+	Volume      uint64 `json:"maximum-supply,string,omitempty"`
+	Decimal     int64  `json:"decimal_number,string,omitempty"`
+	Issuer      string `json:"issuer"`
+	Address     string `json:"address"`
+	Description string `json:"description"`
+	Status      string `json:"status,omitempty"`
+}
